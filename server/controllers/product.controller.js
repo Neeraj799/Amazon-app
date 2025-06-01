@@ -3,7 +3,8 @@ import Product from "../models/product.js";
 
 const createProduct = async (req, res) => {
   try {
-    const { name, ram, price, quantity } = req.body;
+    const { name, description, variants } = req.body;
+    const parsedVariants = JSON.parse(variants);
 
     const { id: subcatgoryId } = req.params;
 
@@ -26,9 +27,8 @@ const createProduct = async (req, res) => {
 
     const productData = {
       name,
-      ram,
-      price,
-      quantity,
+      description,
+      variants: parsedVariants,
       image: imagesUrl,
       subCategory: subcatgoryId,
     };
@@ -47,4 +47,27 @@ const createProduct = async (req, res) => {
   }
 };
 
-export { createProduct };
+const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find().populate("subCategory");
+    return res.json(products);
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const getProductsBySubcategory = async (req, res) => {
+  try {
+    const { id: subcategoryId } = req.params;
+    const products = await Product.find({
+      subCategory: subcategoryId,
+    }).populate("subCategory");
+    res.json(products);
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { createProduct, getAllProducts, getProductsBySubcategory };

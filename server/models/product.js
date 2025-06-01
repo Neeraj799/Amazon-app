@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import variantSchema from "./variant.js";
 
 const productSchema = new mongoose.Schema(
   {
@@ -6,21 +7,16 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
-    ram: {
+    description: {
       type: String,
       required: true,
     },
 
-    price: {
-      type: String,
+    variants: {
+      type: [variantSchema],
       required: true,
     },
 
-    quantity: {
-      type: Number,
-      required: true,
-    },
     image: {
       type: [String],
       required: true,
