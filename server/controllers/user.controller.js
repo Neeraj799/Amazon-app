@@ -5,8 +5,6 @@ import { generateToken } from "../utils/createToken.js";
 
 const signup = async (req, res) => {
   try {
-    console.log("hello");
-
     const { error } = userSignUpValidation.validate(req.body, {
       abortEarly: false,
     });

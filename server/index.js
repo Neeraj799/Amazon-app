@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import envConfig from "./config/envConfig.js";
 import authRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "../server/routes/categoryRoutes.js";
+import subCategoryRoutes from "../server/routes/subCategoryRoutes.js";
+import productRoutes from "../server/routes/productRoutes.js";
 
 dotenv.config();
 
@@ -30,6 +33,9 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/category", categoryRoutes);
+app.use("/api/subCategory", subCategoryRoutes);
+app.use("/api/product", productRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
