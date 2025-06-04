@@ -10,6 +10,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("Authorization"));
   const [authUser, setAuthUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         setAuthUser(data.user);
       }
+      setLoading(false);
     } catch (error) {
       toast.error(error.message);
     }
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      checkAuth;
+      checkAuth();
     }
   }, [token]);
 
@@ -69,8 +71,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = {
-    axios,
     authUser,
+    loading,
+    token,
     signup,
     login,
     logout,

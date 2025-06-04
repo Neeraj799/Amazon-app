@@ -3,12 +3,15 @@ import { FiUser } from "react-icons/fi";
 import { MdOutlineEmail } from "react-icons/md";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const { signup } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,18 +21,18 @@ const Signup = () => {
   return (
     <div>
       <div className="flex h-screen">
-        {/*Left side */}
         <div className="flex flex-col w-1/2  bg-blue-600 items-center justify-center gap-10 text-white ">
           <div className="font-bold text-[56px] ">Welcome Back!</div>
           <div className="flex text-[26px] text-center">
             To keep connected with us please login with your personal info
           </div>
-          <button className="border 1px solid black rounded-full px-18 py-3">
+          <button
+            onClick={() => navigate("/login")}
+            className="border 1px solid black rounded-full px-18 py-3"
+          >
             SIGN IN
           </button>
         </div>
-
-        {/*Right side */}
 
         <div className="flex flex-col w-1/2 gap-10 justify-center items-center text-center ">
           <div className="text-4xl font-bold text-[#EDA415]">
@@ -75,7 +78,7 @@ const Signup = () => {
             </div>
             <button
               type="submit"
-              className=" border 1px solid black rounded-full px-18 py-3 bg-[#EDA415] text-white"
+              className=" border 1px solid black rounded-full px-18 py-3 bg-[#EDA415] text-white mt-4"
             >
               SIGN UP
             </button>
