@@ -98,7 +98,6 @@ const getProductsBySubcategories = async (req, res) => {
       Product.countDocuments(filter),
     ]);
 
-    // Return products and totalCount so frontend can handle pagination
     return res.json({ products, totalCount });
   } catch (error) {
     console.log(error.message);
@@ -147,7 +146,6 @@ const updateProduct = async (req, res) => {
         .json({ success: false, message: "Product not found" });
     }
 
-    // Update fields conditionally
     if (name) product.name = name;
     if (description) product.description = description;
     if (variants) product.variants = parsedVariants;

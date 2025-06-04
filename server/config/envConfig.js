@@ -9,12 +9,6 @@ const envConfig = {
   db: {
     URL: process.env.MONGO_URL,
   },
-  imagekit: {
-    PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
-    PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
-    URL: process.env.IMAGEKIT_URL,
-    FOLDER: process.env.IMAGEKIT_FOLDER,
-  },
 };
 
 export default envConfig;
