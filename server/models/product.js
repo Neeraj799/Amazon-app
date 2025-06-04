@@ -24,13 +24,13 @@ const productSchema = new mongoose.Schema(
 
     subCategory: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Subcategory",
+      ref: "subcategory",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("product", productSchema);
 
 export default Product;

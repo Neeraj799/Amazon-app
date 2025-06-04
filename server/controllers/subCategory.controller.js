@@ -22,7 +22,7 @@ const createSubCategory = async (req, res) => {
 
 const getAllSubcategory = async (req, res) => {
   try {
-    const subCategory = await Subcategory.find({});
+    const subCategory = await Subcategory.find({}).populate("category");
 
     return res.status(200).json(subCategory);
   } catch (error) {

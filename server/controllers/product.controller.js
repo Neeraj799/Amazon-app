@@ -57,17 +57,121 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-const getProductsBySubcategory = async (req, res) => {
+const getSingleProduct = async (req, res) => {
   try {
-    const { id: subcategoryId } = req.params;
-    const products = await Product.find({
-      subCategory: subcategoryId,
-    }).populate("subCategory");
-    res.json(products);
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    return res.json(product);
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
 
-export { createProduct, getAllProducts, getProductsBySubcategory };
+const getProductsBySubcategories = async (req, res) => {
+  try {
+    const { ids } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    if (!ids) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Subcategory IDs are required" });
+    }
+
+    const subcategoryIds = ids.split(",");
+
+    // Filter to find products with subCategory in subcategoryIds
+    const filter = { subCategory: { $in: subcategoryIds } };
+
+    const [products, totalCount] = await Promise.all([
+      Product.find(filter)
+        .populate({
+          path: "subCategory",
+          populate: { path: "category" },
+        })
+        .skip(skip)
+        .limit(limit),
+      Product.countDocuments(filter),
+    ]);
+
+    // Return products and totalCount so frontend can handle pagination
+    return res.json({ products, totalCount });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const searchProduct = async (req, res) => {
+  const { query } = req.query;
+
+  const products = await Product.find({
+    name: { $regex: query, $options: "i" },
+  });
+
+  return res.json({ products, totalCount: products.length });
+};
+
+const updateProduct = async (req, res) => {
+  try {
+    const { id: productId } = req.params;
+
+    const { name, description, variants, subCategory } = req.body;
+    const parsedVariants = variants ? JSON.parse(variants) : [];
+
+    const image1 = req.files.image1 && req.files.image1[0];
+    const image2 = req.files.image2 && req.files.image2[0];
+    const image3 = req.files.image3 && req.files.image3[0];
+
+    const newImages = [image1, image2, image3].filter(Boolean);
+
+    const uploadedImageUrls = await Promise.all(
+      newImages.map(async (file) => {
+        const result = await cloudinary.uploader.upload(file.path, {
+          resource_type: "image",
+        });
+        return result.secure_url;
+      })
+    );
+
+    // Fetch existing product
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Update fields conditionally
+    if (name) product.name = name;
+    if (description) product.description = description;
+    if (variants) product.variants = parsedVariants;
+    if (subCategory) product.subCategory = subCategory;
+    if (uploadedImageUrls.length > 0) product.image = uploadedImageUrls;
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export {
+  createProduct,
+  getAllProducts,
+  getProductsBySubcategories,
+  getSingleProduct,
+  searchProduct,
+  updateProduct,
+};

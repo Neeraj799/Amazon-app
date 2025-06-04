@@ -7,6 +7,7 @@ import authRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "../server/routes/categoryRoutes.js";
 import subCategoryRoutes from "../server/routes/subCategoryRoutes.js";
 import productRoutes from "../server/routes/productRoutes.js";
+import wishlistRoutes from "../server/routes/wishlistRoutes.js";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/subCategory", subCategoryRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
